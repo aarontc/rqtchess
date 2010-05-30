@@ -17,9 +17,9 @@ class ChessBoard < Qt::Widget
 			@buttonArray[i] = Array.new
 			for j in 0..7
 				if (i + j) % 2 == 0 then
-				blah= Square.new(BLACK, i, j, self)
+					blah= Square.new(BLACK, i, j, self)
 				else
-				blah= Square.new(WHITE, i, j, self)
+					blah= Square.new(WHITE, i, j, self)
 				end
 				@buttonArray[i].push blah
 				@chessLayout.addWidget(@buttonArray[i][j], i, j)
@@ -31,7 +31,7 @@ class ChessBoard < Qt::Widget
 	
 	def setBoard()
 		for i in 0..7
-			@buttonArray[i][0].state = BPawnState.new
+			@buttonArray[1][i].state = BPawnState.new
 		end
 	end
 end
@@ -42,7 +42,7 @@ class Square < Qt::PushButton
 		super(parent)
 		@x = x
 		@y = y
-		@state = NoState.new
+		@state= NoState.new
 		setStyleSheet("QPushButton { background-color: #{color}; padding:none; border:none;}");
 		setMinimumSize(Qt::Size.new(30, 30))
 		connect(self, SIGNAL('clicked()'), self, SLOT('pressed()'))
@@ -53,66 +53,61 @@ class Square < Qt::PushButton
 	end
 	
 	def state=(val)
-		self.setIcon(val.icon)
 		@state = val
+		setIcon(@state.icon)
+		#p @state
 	end
 	
 end
 
 
 class NoState
-	attr :icon
-	
-	def inialize()
-		self.icon = Qt::Icon.new
+	attr_accessor :icon
+	def initialize
+		@icon = Qt::Icon.new
 	end
 end
 
 class BPawnState
-	attr :icon, true
-	
-	def inialize()
-		self.icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bp.svg")
+	attr_accessor :icon
+	def initialize
+		@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bp.svg")
 	end
+	
 end
 
 class BRookState
-	attr :icon
-	
-	def inialize()
-		self.icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_br.svg")
+	attr_accessor :icon
+	def inialize
+		@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_br.svg")
 	end
 end
 
 class BKingState
-	attr :icon
-	
-	def inialize()
-		self.icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bk.svg")
+	attr_accessor :icon
+	def inialize
+		@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bk.svg")
 	end
 end
 
 class BQueenState
-	attr :icon
-	
-	def inialize()
-		self.icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bq.svg")
+	attr_accessor :icon
+	def inialize
+		@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bq.svg")
 	end
 end
 
 class BKnightState
-	attr :icon
-	
-	def inialize()
-		self.icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bn.svg")
+	attr_accessor :icon
+	def inialize
+		@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bn.svg")
 	end
 end
 
 class BBishopState
-	attr :icon
-	
-	def inialize()
-		self.icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bb.svg")
+	attr_accessor :icon
+	def inialize
+		@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bb.svg")
 	end
 end
 
