@@ -32,21 +32,24 @@ class ChessBoard < Qt::Widget
 
 	def setBoard()
 		for i in 0..7
-			@buttonArray[i][1].state = PawnState.new(1, i, WHITE)
-			p @buttonArray[i][1]
+			@buttonArray[i][1].state = PawnState.new(i, 1, WHITE)
+			p @buttonArray[i][1].state
 		end
 	end
 end
 
 class Square < Qt::PushButton
 	slots 'pressed()'
-	def initialize(color, x, y, parent = nil)
+	attr_accessor :state
+
+	def initialize(color, x, y, state, parent = nil)
 		super(parent)
 		@x = x
 		@y = y
 		@state= BaseState.new(x, y, WHITE)
 		setStyleSheet("QPushButton { background-color: #{color}; padding:none; border:none;}");
-		setMinimumSize(Qt::Size.new(30, 30))
+		setMinimumSize(Qt::Size.new(60, 60))
+		setMaximumHeight(16777215)
 		connect(self, SIGNAL('clicked()'), self, SLOT('pressed()'))
 	end
 
