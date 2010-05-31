@@ -49,16 +49,37 @@ class Chess
 	end
 
 
-	def enumerate_all_moves(chessBoard)
+	def enumerate_all_moves(chessBoard, color)
 		moves = Hash.new
 		for row in 0.upto(BOARD_HEIGHT-1)
 			for col in 0.upto(BOARD_WIDTH-1)
 				puts "Chess::enumerate_all_moves: checking [#{row}, #{col}]..." if DEBUG
+				next unless chessBoard[row][col].state.color == color
 				m = enumerate_move_destinations(chessBoard, row, col)
 				moves[[row, col]] = m unless m.nil?
 			end
 		end
 		moves
+	end
+
+	def get_king_state(chessBoard, color)
+		for row in 0.upto(BOARD_HEIGHT-1)
+			for col in 0.upto(BOARD_WIDTH-1)
+				state = chessBoard[row][col].state
+				return state if state.hasPiece? and state.color == color and state.class == KingState
+			end
+		end
+	end
+
+	def in_check?(chessBoard, color)
+		if color == WHITE
+			enemy_moves = enumerate_all_moves(chessBoard, BLACK)
+		else
+			enemy_moves = enumerate_all_moves(chessBoard, WHITE)
+		end
+		king = get_king_state(chessBoard, color)
+		return true if enemy_moves.include?([king.row, king.col])
+		return false
 	end
 end
 

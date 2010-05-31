@@ -92,7 +92,7 @@ class RookState < BaseState
 	end
 
 	def can_move_to?(chessBoard, row, col)
-		puts "RookState: can_move_to?(#{row}, #{col}) From [#{@row}, #{@col}]" if DEBUG
+		puts "#{self}: can_move_to?(#{row}, #{col}) From [#{@row}, #{@col}]" if DEBUG
 
 		# Can't leave the board
 		return false if row < 0 or col < 0 or row >= BOARD_HEIGHT or col >= BOARD_WIDTH
@@ -105,25 +105,30 @@ class RookState < BaseState
 		#return false if destination.hasPiece? and destination.color == @color
 
 		# move horizontal n spaces
+		# detect enemy piece, stop after hitting it
+		stopnext = false
 		if row == @row
 			direction = 1 if col > @col
 			direction = -1 if col < @col
 			# make sure there are no pieces in between
 			(col - @col).abs.times do |x|
-				return false if chessBoard[row][@col + ((x + 1) * direction)].state.hasPiece? and chessBoard[row][@col + ((x + 1) * direction)].state.color == @color
+				nextspace = chessBoard[row][@col + ((x + 1) * direction)].state
+				return false if nextspace.hasPiece? and nextspace.color == @color
+				return false if stopnext
+				stopnext = true if nextspace.hasPiece?
 			end
 			return true
 		end
 
 		# move vertical n spaces
 		if col == @col
-			puts "RookState: moving vertically" if DEBUG
 			direction = 1 if row > @row
 			direction = -1 if row < @row
 			(row - @row).abs.times do |x|
-				puts "RookState: vertically checking [#{@row + ((x + 1) * direction)}, #{col}]..." if DEBUG
-				return false if chessBoard[@row + ((x + 1) * direction)][col].state.hasPiece?
-				puts "RookState: ...nothing found" if DEBUG
+				nextspace = chessBoard[@row + ((x + 1) * direction)][col].state
+				return false if nextspace.hasPiece? and nextspace.color == @color
+				return false if stopnext
+				stopnext = true if nextspace.hasPiece?
 			end
 			return true
 		end
@@ -190,13 +195,17 @@ class QueenState < BaseState
 		destination = chessBoard[row][col].state
 		return false if destination.hasPiece? and destination.color == @color
 
-		# move horizontal n spaces
+		# detect enemy piece, stop after hitting it
+		stopnext = false
 		if row == @row
 			direction = 1 if col > @col
 			direction = -1 if col < @col
 			# make sure there are no pieces in between
 			(col - @col).abs.times do |x|
-				return false if chessBoard[row][@col + ((x + 1) * direction)].state.hasPiece?
+				nextspace = chessBoard[row][@col + ((x + 1) * direction)].state
+				return false if nextspace.hasPiece? and nextspace.color == @color
+				return false if stopnext
+				stopnext = true if nextspace.hasPiece?
 			end
 			return true
 		end
@@ -206,10 +215,14 @@ class QueenState < BaseState
 			direction = 1 if row > @row
 			direction = -1 if row < @row
 			(row - @row).abs.times do |x|
-				return false if chessBoard[@row + ((x + 1) * direction)][col].state.hasPiece?
+				nextspace = chessBoard[@row + ((x + 1) * direction)][col].state
+				return false if nextspace.hasPiece? and nextspace.color == @color
+				return false if stopnext
+				stopnext = true if nextspace.hasPiece?
 			end
 			return true
 		end
+
 
 		# diagonal
 		coldiff = (@col - col).abs
@@ -222,7 +235,10 @@ class QueenState < BaseState
 		rowslope = -1 if row < @row
 
 		coldiff.times do |x|
-			return false if chessBoard[@row + ((x + 1) * rowslope)][@col + ((x + 1) * colslope)].state.hasPiece?
+			nextspace = chessBoard[@row + ((x + 1) * rowslope)][@col + ((x + 1) * colslope)].state
+			return false if nextspace.hasPiece? and nextspace.color == @color
+			return false if stopnext
+			stopnext = true if nextspace.hasPiece?
 		end
 
 		return true
@@ -292,6 +308,7 @@ class BishopState < BaseState
 		return false if destination.hasPiece? and destination.color == @color
 
 		# diagonal
+		stopnext = false
 		coldiff = (@col - col).abs
 		rowdiff = (@row - row).abs
 		return false unless coldiff == rowdiff
@@ -302,7 +319,10 @@ class BishopState < BaseState
 		rowslope = -1 if row < @row
 
 		coldiff.times do |x|
-			return false if chessBoard[@row + ((x + 1) * rowslope)][@col + ((x + 1) * colslope)].state.hasPiece?
+			nextspace = chessBoard[@row + ((x + 1) * rowslope)][@col + ((x + 1) * colslope)].state
+			return false if nextspace.hasPiece? and nextspace.color == @color
+			return false if stopnext
+			stopnext = true if nextspace.hasPiece?
 		end
 	end
 end
