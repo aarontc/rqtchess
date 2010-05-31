@@ -17,6 +17,7 @@ class ChessBoard < Qt::Widget
 	def initialize(parent = nil)
 		super(parent)
 		resize(400, 400)
+		@clickedPiece = nil
 		@pressedRow = 0
 		@pressedCol = 0
 		@chessLayout = Qt::GridLayout.new(self)
@@ -69,8 +70,8 @@ class ChessBoard < Qt::Widget
 		#place bishops
 		@buttonArray[0][2].state = BishopState.new(0, 2, WHITE)
 		@buttonArray[0][5].state = BishopState.new(0, 5, WHITE)
-		@buttonArray[7][2].state = BishopState.new(7, 2, WHITE)
-		@buttonArray[7][5].state = BishopState.new(7, 5, WHITE)
+		@buttonArray[7][2].state = BishopState.new(7, 2, BLACK)
+		@buttonArray[7][5].state = BishopState.new(7, 5, BLACK)
 
 		#place Kings
 		@buttonArray[0][3].state = KingState.new(0, 3, WHITE)
@@ -82,13 +83,34 @@ class ChessBoard < Qt::Widget
 	end
 
 	def piecePressed
-		print @pressedRow, @pressedCol
-		$stdout.flush
+		if (@clickedPiece == nil) then
+			c = Chess.new
+			@array_moves = c.enumerate_move_destinations(@buttonArray, @pressedRow, @pressedCol)
+			return if @array_moves.nil?
+
+			for moves in @array_moves
+				tmp = @buttonArray[moves[0]][moves[1]]
+				tmp.setStyleSheet("QPushButton { background-color: #{tmp.color}; border: 5px solid green; padding:none;}")
+			end
+
+			@clickedPiece = @buttonArray[@pressedRow][@pressedCol]
+		else
+			return unless @array_moves.include?([@pressedRow, @pressedCol])
+			tmp = @buttonArray[@pressedRow][@pressedCol]
+			tmp.swap_state(@clickedPiece)
+
+			for moves in @array_moves
+				tmp = @buttonArray[moves[0]][moves[1]]
+				tmp.setStyleSheet("QPushButton { background-color: #{tmp.color}; padding:none; border:none;}")
+			end
+
+			@clickedPiece =  nil
+		end
 	end
 end
 
 class Square < Qt::PushButton
-	attr_accessor :state
+	attr_accessor :color, :state
 
 	slots 'pressed()'
 	signals 'selected()'
@@ -125,7 +147,6 @@ class Square < Qt::PushButton
 	end
 
 	def pressed()
-		setStyleSheet("QPushButton { background-color: hotpink; }")
 		parent.pressedRow = @row
 		parent.pressedCol = @col
 		emit selected()
@@ -134,6 +155,14 @@ class Square < Qt::PushButton
 	def state=(val)
 		@state = val
 		setIcon(@state.icon)
+	end
+
+	def swap_state(bttn2)
+		state.move_to(bttn2.state)
+
+		tmp = @state
+		@state = bttn2.state
+		bttn2.state = tmp
 	end
 
 	def inspect

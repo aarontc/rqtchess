@@ -1,5 +1,7 @@
 class BaseState
 	attr_accessor :icon, :color
+	attr :row, true
+	attr :col, true
 
 	def initialize(row = -1, col = -1, color = WHITE)
 		@color = color
@@ -12,6 +14,19 @@ class BaseState
 
 	def hasPiece?
 		@hasPiece
+	end
+
+	def move_to(to)
+		if(to.class == BaseState) then
+			@moveCount = @moveCount + 1
+
+			tmpRow = @row
+			tmpCol = @col
+			@row = to.row
+			@col = to.col
+			to.row = tmpRow
+			to.col = tmpCol
+		end
 	end
 end
 
