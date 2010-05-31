@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
 
 require 'Qt4'
+include 'state.rb'
 BLACK = "black"
 WHITE = "white"
 class ChessBoard < Qt::Widget
@@ -17,21 +18,21 @@ class ChessBoard < Qt::Widget
 			@buttonArray[i] = Array.new
 			for j in 0..7
 				if (i + j) % 2 == 0 then
-					blah= Square.new(BLACK, i, j, self)
-				else
 					blah= Square.new(WHITE, i, j, self)
+				else
+					blah= Square.new(BLACK, i, j, self)
 				end
 				@buttonArray[i].push blah
 				@chessLayout.addWidget(@buttonArray[i][j], i, j)
 			end
 		end
-		
+
 		setBoard()
 	end
-	
+
 	def setBoard()
 		for i in 0..7
-			@buttonArray[1][i].state = BPawnState.new
+			@buttonArray[1][i].state = PawnState.new
 		end
 	end
 end
@@ -42,73 +43,22 @@ class Square < Qt::PushButton
 		super(parent)
 		@x = x
 		@y = y
-		@state= NoState.new
+		@state= BaseState.new
 		setStyleSheet("QPushButton { background-color: #{color}; padding:none; border:none;}");
 		setMinimumSize(Qt::Size.new(30, 30))
 		connect(self, SIGNAL('clicked()'), self, SLOT('pressed()'))
 	end
-	
+
 	def pressed()
 		setStyleSheet("QPushButton { background-color: hotpink; }")
 	end
-	
+
 	def state=(val)
 		@state = val
 		setIcon(@state.icon)
-		#p @state
+		p @state
 	end
-	
-end
 
-
-class NoState
-	attr_accessor :icon
-	def initialize
-		@icon = Qt::Icon.new
-	end
-end
-
-class BPawnState
-	attr_accessor :icon
-	def initialize
-		@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bp.svg")
-	end
-	
-end
-
-class BRookState
-	attr_accessor :icon
-	def inialize
-		@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_br.svg")
-	end
-end
-
-class BKingState
-	attr_accessor :icon
-	def inialize
-		@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bk.svg")
-	end
-end
-
-class BQueenState
-	attr_accessor :icon
-	def inialize
-		@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bq.svg")
-	end
-end
-
-class BKnightState
-	attr_accessor :icon
-	def inialize
-		@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bn.svg")
-	end
-end
-
-class BBishopState
-	attr_accessor :icon
-	def inialize
-		@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bb.svg")
-	end
 end
 
 app = Qt::Application.new(ARGV)
