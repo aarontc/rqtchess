@@ -73,11 +73,6 @@ class ChessBoard < Qt::Widget
 		@buttonArray[0][4].state = QueenState.new(0, 4, WHITE)
 		@buttonArray[7][4].state = QueenState.new(7, 4, BLACK)
 	end
-
-	def resizeEvent(event)
-		h = size().height()
-		resize(h, h)
-	end
 end
 
 class Square < Qt::PushButton
@@ -90,19 +85,29 @@ class Square < Qt::PushButton
 		@col = col
 		@color = color
 		@state= BaseState.new(row, col, WHITE)
-		#setSizePolicy(Qt::SizePolicy::ToolButton)
+		setUpSizePolicy
 		setStyleSheet("QPushButton { background-color: #{color}; padding:none; border:none;}");
 		setMinimumSize(Qt::Size.new(60, 60))
 		setMaximumHeight(16777215)
 		connect(self, SIGNAL('clicked()'), self, SLOT('pressed()'))
 	end
 
+	def setUpSizePolicy
+		policy = sizePolicy
+		policy.setControlType(0x4000)
+		policy.setHorizontalStretch(0)
+		policy.setVerticalStretch(0)
+		setSizePolicy(sizePolicy)
+	end
+
 	def resizeEvent(event)
 		setIconSize(size())
-		width = parent().size().width() / 8
+	end
 
-		size = Qt::Size.new(width, width)
-		resize(size)
+	def sizeHint
+		height = parent.size().height() / 8
+		size = Qt::Size.new(height, height)
+		return size
 	end
 
 	def pressed()
