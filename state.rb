@@ -16,6 +16,10 @@ class BaseState
 		@hasPiece
 	end
 
+	def needPromotion?
+		return false
+	end
+
 	def move_to(to)
 		puts "#{self}: move_to(#{to}"
 		@moveCount = @moveCount + 1
@@ -73,6 +77,16 @@ class PawnState < BaseState
 		# move diagonally forward one row and one col
 		return true if @color == WHITE and row == @row + 1 and (col == @col + 1 or col == @col - 1) and destination.hasPiece? and destination.color == BLACK
 		return true if @color == BLACK and row == @row - 1 and (col == @col + 1 or col == @col - 1) and destination.hasPiece? and destination.color == WHITE
+
+		return false
+	end
+
+	def needPromotion?
+		if (@color == WHITE)
+			return true if (@row == 7)
+		else
+			return true if (@row == 0)
+		end
 
 		return false
 	end

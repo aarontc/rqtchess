@@ -170,6 +170,10 @@ class Square < Qt::PushButton
 			self.state = from.state
 			from.state = BaseState.new(from.row, from.col)
 		end
+
+		if (@state.needPromotion?) then
+			self.state = QueenState.new(@row, @col, self.state.color)
+		end
 	end
 
 	def inspect
