@@ -24,7 +24,7 @@ class ChessBoard < Qt::Widget
 					blah= Square.new(BLACK, i, j, self)
 				end
 				@buttonArray[i].push blah
-				@chessLayout.addWidget(@buttonArray[i][j], i, j)
+				@chessLayout.addWidget(@buttonArray[i][j], j, i)
 			end
 		end
 
@@ -37,7 +37,8 @@ class ChessBoard < Qt::Widget
 
 	def setBoard()
 		for i in 0..7
-			@buttonArray[1][i].state = PawnState.new(1, i, WHITE)
+			@buttonArray[i][1].state = PawnState.new(1, i, WHITE)
+			p @buttonArray[i][1]
 		end
 	end
 end
@@ -48,7 +49,7 @@ class Square < Qt::PushButton
 		super(parent)
 		@x = x
 		@y = y
-		@state= BaseState.new(x, y)
+		@state= BaseState.new(x, y, WHITE)
 		setStyleSheet("QPushButton { background-color: #{color}; padding:none; border:none;}");
 		setMinimumSize(Qt::Size.new(30, 30))
 		connect(self, SIGNAL('clicked()'), self, SLOT('pressed()'))
@@ -61,7 +62,6 @@ class Square < Qt::PushButton
 	def state=(val)
 		@state = val
 		setIcon(@state.icon)
-		p @state
 	end
 end
 

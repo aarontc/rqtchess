@@ -59,14 +59,13 @@ class PawnState < BaseState
 
 		return true
 	end
-
 end
 
 class RookState < BaseState
 
-	def initialize(color = WHITE)
+	def initialize(x, y, color = WHITE)
+		super(x, y, color)
 		@hasPiece = true
-		@color = color
 		if(@color == WHITE) then
 			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_wr.svg")
 		else
@@ -76,9 +75,9 @@ class RookState < BaseState
 end
 
 class KingState < BaseState
-	@hasPiece = true
-	def initialize(color = WHITE)
-		@color = color
+	def initialize(x, y, color = WHITE)
+		super(x, y, color)
+		@hasPiece = true
 		if(@color == WHITE) then
 			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_wk.svg")
 		else
@@ -91,9 +90,9 @@ end
 
 class QueenState < BaseState
 
-	def initialize(color = WHITE)
+	def initialize(x, y, color = WHITE)
+		super(x, y, color)
 		@hasPiece = true
-		@color = color
 		if(@color == WHITE) then
 			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_wq.svg")
 		else
@@ -105,9 +104,9 @@ end
 
 class KnightState < BaseState
 
-	def initialize(color = WHITE)
+	def initialize(x, y, color = WHITE)
+		super(x, y, color)
 		@hasPiece = true
-		@color = color
 		if(@color == WHITE) then
 			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bn.svg")
 		else
@@ -118,9 +117,9 @@ end
 
 class BishopState < BaseState
 
-	def initialize(color = WHITE)
+	def initialize(x, y, color = WHITE)
+		super(x, y, color)
 		@hasPiece = true
-		@color = color
 		if(@color == WHITE) then
 			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_wb.svg")
 		else
