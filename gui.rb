@@ -1,5 +1,9 @@
 #!/usr/bin/ruby
 
+BOARD_WIDTH = 8
+BOARD_HEIGHT = 8
+
+
 require 'Qt4'
 require 'state.rb'
 require 'chess.rb'
@@ -12,26 +16,28 @@ class ChessBoard < Qt::Widget
 		@chessLayout = Qt::GridLayout.new(self)
 		@chessLayout.setSpacing(0)
 		@chessLayout.setContentsMargins(0, 0, 0, 0)
-		#@chessLayout.setSizeConstraint()
 		setLayout(@chessLayout)
+
 		@buttonArray = Array.new
-		for i in 0..7
-			@buttonArray[i] = Array.new
-			for j in 0..7
-				if (i + j) % 2 == 0 then
-					blah= Square.new(WHITE, i, j, self)
+		for row in 0.upto(BOARD_HEIGHT-1)
+			@buttonArray[row] = Array.new
+			for col in 0.upto(BOARD_WIDTH-1)
+				if (row + col) % 2 == 0
+					color = WHITE
 				else
-					blah= Square.new(BLACK, i, j, self)
+					color = BLACK
 				end
-				@buttonArray[i].push blah
-				@chessLayout.addWidget(@buttonArray[i][j], j, i)
+				@buttonArray[row][col] = Square.new(color, row, col, self)
+				@chessLayout.addWidget(@buttonArray[row][col], row, col)
 			end
 		end
+
 
 		setBoard()
 
 		c = Chess.new
-		p c.enumerate_move_destinations(@buttonArray, 1, 1)
+		p c.enumerate_all_moves(@buttonArray)
+		p @buttonArray
 
 	end
 
@@ -44,12 +50,15 @@ class ChessBoard < Qt::Widget
 end
 
 class Square < Qt::PushButton
+	attr_accessor :state
+
 	slots 'pressed()'
-	def initialize(color, x, y, parent = nil)
+	def initialize(color, row, col, parent = nil)
 		super(parent)
-		@x = x
-		@y = y
-		@state= BaseState.new(x, y, WHITE)
+		@row = row
+		@col = col
+		@color = color
+		@state= BaseState.new(row, col, WHITE)
 		setStyleSheet("QPushButton { background-color: #{color}; padding:none; border:none;}");
 		setMinimumSize(Qt::Size.new(30, 30))
 		connect(self, SIGNAL('clicked()'), self, SLOT('pressed()'))
@@ -62,6 +71,10 @@ class Square < Qt::PushButton
 	def state=(val)
 		@state = val
 		setIcon(@state.icon)
+	end
+
+	def inspect
+		"<Square [#{@row}, #{@col}]: (#{@color}) #{@state.class}: #{@state.inspect}>"
 	end
 end
 

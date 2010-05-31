@@ -34,19 +34,30 @@ Ro Kn Bi Qu Ki Bi Kn Ro
 
 
 class Chess
-	BOARD_WIDTH = 8
-	BOARD_HEIGHT = 8
 
 	# returns an array of valid moves from the x, y coordinates passed
 	def enumerate_move_destinations(chessBoard, x, y)
 		destinations = Array.new
 		curstate = chessBoard[x][y].state
+		return nil unless curstate.hasPiece?
 		for x in 0.upto(BOARD_HEIGHT-1)
 			for y in 0.upto(BOARD_WIDTH-1)
 				destinations.push([x, y]) if curstate.can_move_to?(chessBoard, x, y)
 			end
 		end
+		destinations
 	end
 
+
+	def enumerate_all_moves(chessBoard)
+		moves = Hash.new
+		for x in 0.upto(BOARD_HEIGHT-1)
+			for y in 0.upto(BOARD_WIDTH-1)
+				m = enumerate_move_destinations(chessBoard, x, y)
+				moves[[x, y]] = m unless m.nil?
+			end
+		end
+		moves
+	end
 end
 

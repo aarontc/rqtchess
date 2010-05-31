@@ -1,5 +1,5 @@
 class BaseState
-	attr_accessor :icon
+	attr_accessor :icon, :color
 
 	def initialize(x = -1, y = -1, color = WHITE)
 		@color = color
@@ -49,7 +49,7 @@ class PawnState < BaseState
 		if x == @x # same column
 			return false if destination.hasPiece?								# Cannot attack forward
 			return false if (y - @y).abs > 2
-			return false if (y - @y).abs == 2 unless @movecount == 0
+			return false if (y - @y).abs == 2 unless @moveCount == 0
 		else
 			return false unless destination.hasPiece?							# Must move to attack if going diagonal
 			return false unless (y - @y).abs == 1								# Must move forward exactly one row
