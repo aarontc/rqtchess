@@ -74,6 +74,10 @@ class RookState < BaseState
 			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_br.svg")
 		end
 	end
+
+	def can_move_to?(chessBoard, x, y)
+		return false
+	end
 end
 
 class KingState < BaseState
@@ -88,7 +92,9 @@ class KingState < BaseState
 		end
 	end
 
-
+	def can_move_to?(chessBoard, x, y)
+		return false
+	end
 end
 
 class QueenState < BaseState
@@ -104,6 +110,9 @@ class QueenState < BaseState
 		end
 	end
 
+	def can_move_to?(chessBoard, x, y)
+		return false
+	end
 end
 
 class KnightState < BaseState
@@ -113,10 +122,14 @@ class KnightState < BaseState
 		@hasPiece = true
 
 		if(@color == WHITE) then
-			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bn.svg")
-		else
 			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_wn.svg")
+		else
+			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bn.svg")
 		end
+	end
+
+	def can_move_to?(chessBoard, x, y)
+		return false
 	end
 end
 
@@ -131,5 +144,9 @@ class BishopState < BaseState
 		else
 			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bb.svg")
 		end
+	end
+
+	def can_move_to?(chessBoard, x, y)
+		return false
 	end
 end
