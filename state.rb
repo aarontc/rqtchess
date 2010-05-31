@@ -17,16 +17,15 @@ class BaseState
 	end
 
 	def move_to(to)
-		if(to.class == BaseState) then
-			@moveCount = @moveCount + 1
+		puts "#{self}: move_to(#{to}"
+		@moveCount = @moveCount + 1
 
-			tmpRow = @row
-			tmpCol = @col
-			@row = to.row
-			@col = to.col
-			to.row = tmpRow
-			to.col = tmpCol
-		end
+		tmpRow = @row
+		tmpCol = @col
+		@row = to.row
+		@col = to.col
+		to.row = tmpRow
+		to.col = tmpCol
 	end
 end
 

@@ -161,7 +161,7 @@ class Square < Qt::PushButton
 		state.move_to(bttn2.state)
 
 		tmp = @state
-		@state = bttn2.state
+		self.state = bttn2.state
 		bttn2.state = tmp
 	end
 
