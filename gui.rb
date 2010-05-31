@@ -2,6 +2,7 @@
 
 require 'Qt4'
 require 'state.rb'
+require 'chess.rb'
 BLACK = "black"
 WHITE = "white"
 class ChessBoard < Qt::Widget
@@ -28,11 +29,15 @@ class ChessBoard < Qt::Widget
 		end
 
 		setBoard()
+
+		c = Chess.new
+		p c.enumerate_move_destinations(@buttonArray, 1, 1)
+
 	end
 
 	def setBoard()
 		for i in 0..7
-			@buttonArray[1][i].state = PawnState.new
+			@buttonArray[1][i].state = PawnState.new(1, i, WHITE)
 		end
 	end
 end
@@ -43,7 +48,7 @@ class Square < Qt::PushButton
 		super(parent)
 		@x = x
 		@y = y
-		@state= BaseState.new
+		@state= BaseState.new(x, y)
 		setStyleSheet("QPushButton { background-color: #{color}; padding:none; border:none;}");
 		setMinimumSize(Qt::Size.new(30, 30))
 		connect(self, SIGNAL('clicked()'), self, SLOT('pressed()'))

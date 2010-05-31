@@ -40,9 +40,13 @@ class Chess
 	# returns an array of valid moves from the x, y coordinates passed
 	def enumerate_move_destinations(chessBoard, x, y)
 		destinations = Array.new
-		curstate = chessBoard[x][y]
+		curstate = chessBoard[x][y].state
 		for x in 0.upto(BOARD_HEIGHT-1)
 			for y in 0.upto(BOARD_WIDTH-1)
-				if curstate.can_move_to?(chessBoard, x, y)
-					destinations.push([x, y])
+				destinations.push([x, y]) if curstate.can_move_to?(chessBoard, x, y)
+			end
+		end
+	end
+
+end
 
