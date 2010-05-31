@@ -43,7 +43,7 @@ class ChessBoard < Qt::Widget
 	end
 
 	def setBoard()
-		for i in 0.upto(BOARD_HEIGHT-1)
+		for i in 0.upto(BOARD_WIDTH-1)
 			@buttonArray[1][i].state = PawnState.new(1, i, WHITE)
 			@buttonArray[6][i].state = PawnState.new(6, i, BLACK)
 		end
