@@ -2,7 +2,7 @@
 
 BOARD_WIDTH = 8
 BOARD_HEIGHT = 8
-
+DEBUG = true
 
 require 'Qt4'
 require 'state.rb'
@@ -10,9 +10,15 @@ require 'chess.rb'
 BLACK = "black"
 WHITE = "white"
 class ChessBoard < Qt::Widget
+	slots 'piecePressed()'
+	attr :pressedRow, true
+	attr :pressedCol, true
+
 	def initialize(parent = nil)
 		super(parent)
 		resize(400, 400)
+		@pressedRow = 0
+		@pressedCol = 0
 		@chessLayout = Qt::GridLayout.new(self)
 		@chessLayout.setSpacing(0)
 		@chessLayout.setContentsMargins(0, 0, 0, 0)
@@ -29,6 +35,7 @@ class ChessBoard < Qt::Widget
 				end
 				@buttonArray[row][col] = Square.new(color, row, col, self)
 				@chessLayout.addWidget(@buttonArray[row][col], row, col)
+				connect(@buttonArray[row][col], SIGNAL('selected()'), self, SLOT('piecePressed()'))
 			end
 		end
 
@@ -50,8 +57,8 @@ class ChessBoard < Qt::Widget
 		#place rooks
 		@buttonArray[0][0].state = RookState.new(0, 0, WHITE)
 		@buttonArray[0][7].state = RookState.new(0, 7, WHITE)
-		@buttonArray[7][0].state = RookState.new(0, 0, BLACK)
-		@buttonArray[7][7].state = RookState.new(0, 7, BLACK)
+		@buttonArray[7][0].state = RookState.new(7, 0, BLACK)
+		@buttonArray[7][7].state = RookState.new(7, 7, BLACK)
 
 		#place knights
 		@buttonArray[0][1].state = KnightState.new(0, 1, WHITE)
@@ -73,12 +80,19 @@ class ChessBoard < Qt::Widget
 		@buttonArray[0][4].state = QueenState.new(0, 4, WHITE)
 		@buttonArray[7][4].state = QueenState.new(7, 4, BLACK)
 	end
+
+	def piecePressed
+		print @pressedRow, @pressedCol
+		$stdout.flush
+	end
 end
 
 class Square < Qt::PushButton
 	attr_accessor :state
 
 	slots 'pressed()'
+	signals 'selected()'
+
 	def initialize(color, row, col, parent = nil)
 		super(parent)
 		@row = row
@@ -112,6 +126,9 @@ class Square < Qt::PushButton
 
 	def pressed()
 		setStyleSheet("QPushButton { background-color: hotpink; }")
+		parent.pressedRow = @row
+		parent.pressedCol = @col
+		emit selected()
 	end
 
 	def state=(val)
@@ -127,5 +144,4 @@ end
 app = Qt::Application.new(ARGV)
 chess = ChessBoard.new
 chess.show
-
 app.exec
