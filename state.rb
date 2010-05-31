@@ -1,20 +1,20 @@
 class BaseState
 	attr_accessor :icon, :isPiece
 
-	def initialize(x, y, color=WHITE)
+	def initialize(x=-1, y=-1, color=WHITE)
 		@color = color
 		@icon = Qt::Icon.new
 		@isPiece = false
 		@moveCount = 0
-		@x = -1
-		@y = -1
+		@x = x
+		@y = y
 	end
 end
 
 class PawnState < BaseState
 
 	def initialize(x, y, color = WHITE)
-		super
+		super(x, y, color)
 		@isPiece = true
 		@color = color
 		if(@color == WHITE) then
@@ -25,11 +25,13 @@ class PawnState < BaseState
 	end
 
 	def can_move_to?(chessBoard, x, y)
+	end
 end
 
 class RookState < BaseState
 
-	def initialize(color = WHITE)
+	def initialize(x, y, color = WHITE)
+		super(x, y, color)
 		@isPiece = true
 		@color = color
 		if(@color == WHITE) then
@@ -41,8 +43,9 @@ class RookState < BaseState
 end
 
 class KingState < BaseState
-	@isPiece = true
-	def initialize(color = WHITE)
+	def initialize(x, y, color = WHITE)
+		super(x, y, color)
+		@isPiece = true
 		@color = color
 		if(@color == WHITE) then
 			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_wk.svg")
@@ -56,7 +59,8 @@ end
 
 class QueenState < BaseState
 
-	def initialize(color = WHITE)
+	def initialize(x, y, color = WHITE)
+		super(x, y, color)
 		@isPiece = true
 		@color = color
 		if(@color == WHITE) then
@@ -70,7 +74,8 @@ end
 
 class KnightState < BaseState
 
-	def initialize(color = WHITE)
+	def initialize(x, y, color = WHITE)
+		super(x, y, color)
 		@isPiece = true
 		@color = color
 		if(@color == WHITE) then
@@ -83,7 +88,8 @@ end
 
 class BishopState < BaseState
 
-	def initialize(color = WHITE)
+	def initialize(x, y, color = WHITE)
+		super(x, y, color)
 		@isPiece = true
 		@color = color
 		if(@color == WHITE) then
