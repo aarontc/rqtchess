@@ -102,6 +102,7 @@ class ChessBoard < Qt::Widget
 
 				puts @chess.in_check?(@buttonArray, WHITE)
 				puts @chess.in_check?(@buttonArray, BLACK)
+				p @chess.ai_generate_move(@buttonArray, WHITE)
 
 				for moves in @array_moves
 					tmp = @buttonArray[moves[0]][moves[1]]
