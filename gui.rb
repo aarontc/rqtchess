@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
 require 'Qt4'
-include 'state.rb'
+require 'state.rb'
 BLACK = "black"
 WHITE = "white"
 class ChessBoard < Qt::Widget

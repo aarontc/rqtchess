@@ -1,18 +1,21 @@
 class BaseState
-	attr_accessor :icon
+	attr_accessor :icon, :isPiece
 
-	def initialize
+	def initialize(x, y, color=WHITE)
+		@color = color
 		@icon = Qt::Icon.new
-	end
-
-	def isPiece
-		return false
+		@isPiece = false
+		@moveCount = 0
+		@x = -1
+		@y = -1
 	end
 end
 
 class PawnState < BaseState
 
-	def inialize(color = WHITE)
+	def initialize(x, y, color = WHITE)
+		super
+		@isPiece = true
 		@color = color
 		if(@color == WHITE) then
 			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_wp.svg")
@@ -21,14 +24,13 @@ class PawnState < BaseState
 		end
 	end
 
-	def isPiece
-		return true
-	end
+	def can_move_to?(chessBoard, x, y)
 end
 
 class RookState < BaseState
 
-	def inialize(color = WHITE)
+	def initialize(color = WHITE)
+		@isPiece = true
 		@color = color
 		if(@color == WHITE) then
 			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_wr.svg")
@@ -36,15 +38,11 @@ class RookState < BaseState
 			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_br.svg")
 		end
 	end
-
-	def isPiece
-		return true
-	end
 end
 
 class KingState < BaseState
-
-	def inialize(color = WHITE)
+	@isPiece = true
+	def initialize(color = WHITE)
 		@color = color
 		if(@color == WHITE) then
 			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_wk.svg")
@@ -52,11 +50,14 @@ class KingState < BaseState
 			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bk.svg")
 		end
 	end
+
+
 end
 
 class QueenState < BaseState
 
-	def inialize(color = WHITE)
+	def initialize(color = WHITE)
+		@isPiece = true
 		@color = color
 		if(@color == WHITE) then
 			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_wq.svg")
@@ -65,14 +66,12 @@ class QueenState < BaseState
 		end
 	end
 
-	def isPiece
-		return true
-	end
 end
 
 class KnightState < BaseState
 
-	def inialize(color = WHITE)
+	def initialize(color = WHITE)
+		@isPiece = true
 		@color = color
 		if(@color == WHITE) then
 			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bn.svg")
@@ -80,24 +79,17 @@ class KnightState < BaseState
 			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_wn.svg")
 		end
 	end
-
-	def isPiece
-		return true
-	end
 end
 
 class BishopState < BaseState
 
-	def inialize(color = WHITE)
+	def initialize(color = WHITE)
+		@isPiece = true
 		@color = color
 		if(@color == WHITE) then
 			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_wb.svg")
 		else
 			@icon = Qt::Icon.new("./images/Chess_Maurizio_Monge_Fantasy_bb.svg")
 		end
-	end
-
-	def isPiece
-		return true
 	end
 end
