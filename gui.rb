@@ -2,6 +2,7 @@
 
 BOARD_WIDTH = 8
 BOARD_HEIGHT = 8
+DEBUG = true
 
 
 require 'Qt4'
@@ -50,8 +51,8 @@ class ChessBoard < Qt::Widget
 		#place rooks
 		@buttonArray[0][0].state = RookState.new(0, 0, WHITE)
 		@buttonArray[0][7].state = RookState.new(0, 7, WHITE)
-		@buttonArray[7][0].state = RookState.new(0, 0, BLACK)
-		@buttonArray[7][7].state = RookState.new(0, 7, BLACK)
+		@buttonArray[7][0].state = RookState.new(7, 0, BLACK)
+		@buttonArray[7][7].state = RookState.new(7, 7, BLACK)
 
 		#place knights
 		@buttonArray[0][1].state = KnightState.new(0, 1, WHITE)
