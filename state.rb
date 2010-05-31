@@ -102,7 +102,7 @@ class RookState < BaseState
 
 		# Grab destination state for ease of rules
 		destination = chessBoard[row][col].state
-		return false if destination.hasPiece? and destination.color == @color
+		#return false if destination.hasPiece? and destination.color == @color
 
 		# move horizontal n spaces
 		if row == @row
@@ -110,7 +110,7 @@ class RookState < BaseState
 			direction = -1 if col < @col
 			# make sure there are no pieces in between
 			(col - @col).abs.times do |x|
-				return false if chessBoard[row][@col + ((x + 1) * direction)].state.hasPiece?
+				return false if chessBoard[row][@col + ((x + 1) * direction)].state.hasPiece? and chessBoard[row][@col + ((x + 1) * direction)].state.color == @color
 			end
 			return true
 		end

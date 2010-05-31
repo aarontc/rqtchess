@@ -83,34 +83,36 @@ class ChessBoard < Qt::Widget
 	end
 
 	def piecePressed
-		if (@clickedPiece == nil) then
+		if @clickedPiece.nil? then
 			c = Chess.new
 			@array_moves = c.enumerate_move_destinations(@buttonArray, @pressedRow, @pressedCol)
-			return if @array_moves.nil?
+			unless @array_moves.nil? or @array_moves.empty?
+				for moves in @array_moves
+					tmp = @buttonArray[moves[0]][moves[1]]
+					tmp.setStyleSheet("QPushButton { background-color: #{tmp.color}; border: 5px solid green; padding:none;}")
+				end
 
-			for moves in @array_moves
-				tmp = @buttonArray[moves[0]][moves[1]]
-				tmp.setStyleSheet("QPushButton { background-color: #{tmp.color}; border: 5px solid green; padding:none;}")
+				@clickedPiece = @buttonArray[@pressedRow][@pressedCol]
 			end
 
-			@clickedPiece = @buttonArray[@pressedRow][@pressedCol]
 		else
-			return unless @array_moves.include?([@pressedRow, @pressedCol])
-			tmp = @buttonArray[@pressedRow][@pressedCol]
-			tmp.swap_state(@clickedPiece)
+			if @array_moves.include?([@pressedRow, @pressedCol])
+				tmp = @buttonArray[@pressedRow][@pressedCol]
+				tmp.move_state(@clickedPiece)
 
-			for moves in @array_moves
-				tmp = @buttonArray[moves[0]][moves[1]]
-				tmp.setStyleSheet("QPushButton { background-color: #{tmp.color}; padding:none; border:none;}")
+				for moves in @array_moves
+					tmp = @buttonArray[moves[0]][moves[1]]
+					tmp.setStyleSheet("QPushButton { background-color: #{tmp.color}; padding:none; border:none;}")
+				end
+
+				@clickedPiece =  nil
 			end
-
-			@clickedPiece =  nil
 		end
 	end
 end
 
 class Square < Qt::PushButton
-	attr_accessor :color, :state
+	attr_accessor :color, :state, :row, :col
 
 	slots 'pressed()'
 	signals 'selected()'
@@ -157,12 +159,17 @@ class Square < Qt::PushButton
 		setIcon(@state.icon)
 	end
 
-	def swap_state(bttn2)
-		state.move_to(bttn2.state)
+	def move_state(from)
+		from.state.move_to(@state)
 
-		tmp = @state
-		self.state = bttn2.state
-		bttn2.state = tmp
+		if(@state.class == BaseState) then
+			tmp = @state
+			self.state = from.state
+			from.state = tmp
+		else
+			self.state = from.state
+			from.state = BaseState.new(from.row, from.col)
+		end
 	end
 
 	def inspect
