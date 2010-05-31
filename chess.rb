@@ -35,14 +35,14 @@ Ro Kn Bi Qu Ki Bi Kn Ro
 
 class Chess
 
-	# returns an array of valid moves from the x, y coordinates passed
-	def enumerate_move_destinations(chessBoard, x, y)
+	# returns an array of valid moves from the row, col coordinates passed
+	def enumerate_move_destinations(chessBoard, row_in, col_in)
 		destinations = Array.new
-		curstate = chessBoard[x][y].state
+		curstate = chessBoard[row_in][col_in].state
 		return nil unless curstate.hasPiece?
-		for x in 0.upto(BOARD_HEIGHT-1)
-			for y in 0.upto(BOARD_WIDTH-1)
-				destinations.push([x, y]) if curstate.can_move_to?(chessBoard, x, y)
+		for row in 0.upto(BOARD_HEIGHT-1)
+			for col in 0.upto(BOARD_WIDTH-1)
+				destinations.push([row, col]) if curstate.can_move_to?(chessBoard, row, col)
 			end
 		end
 		destinations
@@ -51,10 +51,11 @@ class Chess
 
 	def enumerate_all_moves(chessBoard)
 		moves = Hash.new
-		for x in 0.upto(BOARD_HEIGHT-1)
-			for y in 0.upto(BOARD_WIDTH-1)
-				m = enumerate_move_destinations(chessBoard, x, y)
-				moves[[x, y]] = m unless m.nil?
+		for row in 0.upto(BOARD_HEIGHT-1)
+			for col in 0.upto(BOARD_WIDTH-1)
+				puts "Chess::enumerate_all_moves: checking [#{row}, #{col}]..." if DEBUG
+				m = enumerate_move_destinations(chessBoard, row, col)
+				moves[[row, col]] = m unless m.nil?
 			end
 		end
 		moves
