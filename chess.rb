@@ -53,7 +53,7 @@ class Chess
 		moves = Hash.new
 		for row in 0.upto(BOARD_HEIGHT-1)
 			for col in 0.upto(BOARD_WIDTH-1)
-				puts "Chess::enumerate_all_moves: checking [#{row}, #{col}]..." if DEBUG
+				#puts "Chess::enumerate_all_moves: checking [#{row}, #{col}]..." if DEBUG
 				next unless chessBoard[row][col].state.color == color
 				m = enumerate_move_destinations(chessBoard, row, col)
 				moves[[row, col]] = m unless m.nil?
@@ -72,14 +72,24 @@ class Chess
 	end
 
 	def in_check?(chessBoard, color)
+		puts "Checking if #{color} is in check..."
 		if color == WHITE
 			enemy_moves = enumerate_all_moves(chessBoard, BLACK)
 		else
 			enemy_moves = enumerate_all_moves(chessBoard, WHITE)
 		end
+		puts "enemy moves: #{enemy_moves.inspect}"
 		king = get_king_state(chessBoard, color)
-		return true if enemy_moves.include?([king.row, king.col])
+		puts "king: #{king.inspect}"
+		enemy_moves.each_value do |x|
+			return true if x.include?([king.row, king.col])
+		end
 		return false
 	end
+
+	def ai_generate_move(chessBoard, color)
+
+	end
+
 end
 

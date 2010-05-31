@@ -2,7 +2,7 @@
 
 BOARD_WIDTH = 8
 BOARD_HEIGHT = 8
-DEBUG = true
+DEBUG = false
 
 require 'Qt4'
 require 'state.rb'
@@ -15,6 +15,9 @@ class ChessBoard < Qt::Widget
 	attr :pressedCol, true
 
 	def initialize(parent = nil)
+
+		@chess = Chess.new
+
 		super(parent)
 		resize(400, 400)
 		@clickedPiece = nil
@@ -42,10 +45,6 @@ class ChessBoard < Qt::Widget
 
 
 		setBoard()
-
-		c = Chess.new
-		p c.enumerate_all_moves(@buttonArray)
-		p @buttonArray
 
 	end
 
@@ -100,6 +99,10 @@ class ChessBoard < Qt::Widget
 				tmp = @buttonArray[@pressedRow][@pressedCol]
 				tmp.move_state(@clickedPiece)
 
+
+				puts @chess.in_check?(@buttonArray, WHITE)
+				puts @chess.in_check?(@buttonArray, BLACK)
+
 				for moves in @array_moves
 					tmp = @buttonArray[moves[0]][moves[1]]
 					tmp.setStyleSheet("QPushButton { background-color: #{tmp.color}; padding:none; border:none;}")
@@ -118,6 +121,8 @@ class Square < Qt::PushButton
 	signals 'selected()'
 
 	def initialize(color, row, col, parent = nil)
+		@chess = Chess.new
+
 		super(parent)
 		@row = row
 		@col = col
@@ -174,6 +179,7 @@ class Square < Qt::PushButton
 		if (@state.needPromotion?) then
 			self.state = QueenState.new(@row, @col, self.state.color)
 		end
+
 	end
 
 	def inspect
