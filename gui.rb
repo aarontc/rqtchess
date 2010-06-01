@@ -9,13 +9,15 @@ require 'state.rb'
 require 'chess.rb'
 BLACK = "black"
 WHITE = "white"
+
 class ChessBoard < Qt::Widget
 	slots 'piecePressed()'
 	attr :pressedRow, true
 	attr :pressedCol, true
 
 	def initialize(parent = nil)
-
+		@mod = ARGV[0]
+		@whoseMove = WHITE
 		@chess = Chess.new
 
 		super(parent)
@@ -45,6 +47,17 @@ class ChessBoard < Qt::Widget
 
 
 		setBoard()
+
+		if @mod == "cvc"
+			while true do
+				move = @chess.ai_generate_move(@buttonArray, WHITE)
+				domove
+				doevents
+				move = @chess.ai_generate_moev(@buttonArray, BLACK)
+				domove
+				doevents
+			end
+		end
 
 	end
 
@@ -83,6 +96,7 @@ class ChessBoard < Qt::Widget
 
 	def piecePressed
 		if @clickedPiece.nil? then
+			return unless (@buttonArray[@pressedRow][@pressedCol].state.color == @whoseMove)
 			c = Chess.new
 			@array_moves = c.enumerate_move_destinations(@buttonArray, @pressedRow, @pressedCol)
 			unless @array_moves.nil? or @array_moves.empty?
@@ -92,8 +106,9 @@ class ChessBoard < Qt::Widget
 				end
 
 				@clickedPiece = @buttonArray[@pressedRow][@pressedCol]
-			end
+				@whoseMove = (@whoseMove == WHITE ? BLACK: WHITE)
 
+			end
 		else
 			if @array_moves.include?([@pressedRow, @pressedCol])
 				tmp = @buttonArray[@pressedRow][@pressedCol]
@@ -109,8 +124,21 @@ class ChessBoard < Qt::Widget
 				end
 
 				@clickedPiece =  nil
+
+				if @mod == "pvc" and @whoseMove == BLACK then
+					move = @chess.ai_generate_move(@buttonArray, BLACK)
+					p move
+					@pressedRow = move[0][0]
+					@pressedCol = move[0][1]
+					piecePressed
+					@pressedRow = move[1][0]
+					@pressedCol = move[1][1]
+					piecePressed
+				end
 			end
 		end
+
+
 	end
 end
 
@@ -184,6 +212,16 @@ class Square < Qt::PushButton
 
 	def inspect
 		"<Square [#{@row}, #{@col}]: (#{@color}) #{@state.class}: #{@state.inspect}>"
+	end
+end
+
+if ARGV.count != 1
+	puts "Use argument: pvp, pvc, cvc"
+	exit(1)
+else
+	unless ["pvp", "pvc", "cvc"].include?(ARGV[0])
+		puts "Use argument: pvp, pvc, cvc"
+		exit(2)
 	end
 end
 
