@@ -10,8 +10,9 @@ require 'chess.rb'
 BLACK = "black"
 WHITE = "white"
 
+
 class ChessBoard < Qt::Widget
-	slots 'piecePressed()'
+	slots 'piecePressed()', 'cvc_step()'
 	attr :pressedRow, true
 	attr :pressedCol, true
 
@@ -19,6 +20,8 @@ class ChessBoard < Qt::Widget
 		@mod = ARGV[0]
 		@whoseMove = WHITE
 		@chess = Chess.new
+		@cvc_step = -1
+
 
 		super(parent)
 		resize(400, 400)
@@ -48,17 +51,32 @@ class ChessBoard < Qt::Widget
 
 		setBoard()
 
-		if @mod == "cvc"
-			while true do
-				move = @chess.ai_generate_move(@buttonArray, WHITE)
-				domove
-				doevents
-				move = @chess.ai_generate_moev(@buttonArray, BLACK)
-				domove
-				doevents
-			end
-		end
 
+	end
+
+	def cvc_step
+		@cvc_step = @cvc_step + 1
+		@cvc_step = 0 if @cvc_step > 3
+		case @cvc_step
+		when 0:
+			move = @chess.ai_generate_move(@buttonArray, WHITE)
+			@pressedRow = move[0][0]
+			@pressedCol = move[0][1]
+			piecePressed
+		when 1:
+			@pressedRow = move[1][0]
+			@pressedCol = move[1][1]
+			piecePressed
+		when 2:
+			move = @chess.ai_generate_move(@buttonArray, BLACK)
+			@pressedRow = move[0][0]
+			@pressedCol = move[0][1]
+			piecePressed
+		when 3:
+			@pressedRow = move[1][0]
+			@pressedCol = move[1][1]
+			piecePressed
+		end
 	end
 
 	def setBoard()
@@ -216,17 +234,33 @@ class Square < Qt::PushButton
 	end
 end
 
-if ARGV.count != 1
-	puts "Use argument: pvp, pvc, cvc"
-	exit(1)
-else
-	unless ["pvp", "pvc", "cvc"].include?(ARGV[0])
+def main
+
+	if ARGV.count != 1
 		puts "Use argument: pvp, pvc, cvc"
-		exit(2)
+		exit(1)
+	else
+		unless ["pvp", "pvc", "cvc"].include?(ARGV[0])
+			puts "Use argument: pvp, pvc, cvc"
+			exit(2)
+		end
 	end
+
+	app = Qt::Application.new(ARGV)
+	chess = ChessBoard.new
+	chess.show
+
+	if ARGV[0] == "cvc"
+		Thread.new do
+		#app.processEvents
+		chess.cvc_step
+		#sleep 0.2
+		end
+	end
+
+	return app.exec
 end
 
-app = Qt::Application.new(ARGV)
-chess = ChessBoard.new
-chess.show
-app.exec
+
+
+main
