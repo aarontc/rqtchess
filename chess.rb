@@ -56,7 +56,7 @@ class Chess
 				#puts "Chess::enumerate_all_moves: checking [#{row}, #{col}]..." if DEBUG
 				next unless chessBoard[row][col].state.color == color
 				m = enumerate_move_destinations(chessBoard, row, col)
-				moves[[row, col]] = m unless m.nil?
+				moves[[row, col]] = m unless m.nil? or m.length < 1
 			end
 		end
 		moves
@@ -88,7 +88,13 @@ class Chess
 	end
 
 	def ai_generate_move(chessBoard, color)
-
+		moves = enumerate_all_moves(chessBoard, color)
+		keys = moves.keys
+		move_key = keys[rand(keys.length)]
+		from = move_key
+		spots = moves[move_key]
+		to = spots[rand(spots.length)]
+		return [from, to]
 	end
 
 end
